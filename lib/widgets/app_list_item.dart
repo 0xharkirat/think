@@ -5,13 +5,13 @@ class AppListItem extends StatelessWidget {
   const AppListItem(
       {super.key,
       required this.app,
-      this.isChecked = false,
+      this.isChecked,
       this.onChecked,
 
       required this.isSelection});
 
   final AppInfo app;
-  final bool isChecked;
+  final bool? isChecked;
   final ValueChanged<bool?>? onChecked;
   final bool isSelection;
 

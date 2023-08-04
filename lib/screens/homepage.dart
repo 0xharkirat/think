@@ -5,24 +5,48 @@ import 'package:think/providers/apps_provider.dart';
 import 'package:think/screens/select.dart';
 import 'package:think/widgets/app_list_item.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage> {
+
+  void _getSelectedApps() {
+
+    ref.read(appsProvider.notifier).loadApps();
+
+  }
+
+  void _getInstalledApps() async {
+    ref.read(installedAppsProvider.notifier).storeInstalledApps();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getInstalledApps();
+    _getSelectedApps();
+  }
+  @override
+  Widget build(BuildContext context) {
     Widget content = const Center(
       child: Text('No Apps Selected, Select some apps.'),
     );
-    final List<AppInfo> selectedApps = ref.watch(appsProvider);
 
-    if (selectedApps.isNotEmpty) {
+
+
+
+    if (ref.watch(appsProvider).isNotEmpty) {
       content = Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: ListView.separated(
-          itemCount: selectedApps.length,
+          itemCount: ref.watch(appsProvider).length,
           separatorBuilder: (ctx, index) => const Divider(),
           itemBuilder: ((context, index) =>
-              AppListItem(app: selectedApps[index], isSelection: false)),
+              AppListItem(app: ref.watch(appsProvider)[index], isSelection: false)),
         ),
       );
     }

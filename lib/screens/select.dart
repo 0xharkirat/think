@@ -13,51 +13,52 @@ class SelectScreen extends ConsumerStatefulWidget {
 }
 
 class _SelectScreenState extends ConsumerState<SelectScreen> {
-  List<AppInfo> checkedApps = [];
+
+  List<AppInfo> _checkedApps = [];
 
 
-  void _getInstalledApps() async {
-    ref.read(installedAppsProvider.notifier).storeInstalledApps();
-  }
-
-  void _updateCheckedApps(AppInfo app, bool? isChecked) {
-    setState(() {
-      if (isChecked != null && isChecked) {
-        checkedApps.add(app);
-      } else {
-        checkedApps.remove(app);
-      }
-    });
-  }
 
   void _getCheckedApps() {
     final List<AppInfo> selectedApps = ref.read(appsProvider);
 
-    print(selectedApps);
+
+
     for (final app in selectedApps) {
       setState(() {
-        checkedApps.add(app);
+        _checkedApps.add(app);
       });
     }
   }
+
+  void _updateCheckedApps(AppInfo app, bool? isChecked) {
+    print('${app.name} is checked: $isChecked');
+    setState(() {
+      if (isChecked != null && isChecked) {
+        _checkedApps.add(app);
+      } else {
+        _checkedApps.remove(app);
+      }
+    });
+  }
+
+  
 
   @override
   void initState() {
     super.initState();
 
-    _getInstalledApps();
     _getCheckedApps();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          title: const Text('Select apps'),
-        ),
-        body: Padding(
+    Widget content = const Center(
+      child: CircularProgressIndicator(),
+    );
+
+
+    if (ref.watch(installedAppsProvider).isNotEmpty){
+      content = Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: ListView.separated(
               itemCount: ref.watch(installedAppsProvider).length,
@@ -67,28 +68,28 @@ class _SelectScreenState extends ConsumerState<SelectScreen> {
               itemBuilder: (ctx, index) {
                 return AppListItem(
                   app: ref.watch(installedAppsProvider)[index],
-                  isChecked: checkedApps
+                  isChecked: _checkedApps
                       .contains(ref.watch(installedAppsProvider)[index]),
                   onChecked: (value) => _updateCheckedApps(
                       ref.watch(installedAppsProvider)[index], value),
                   isSelection: true,
                 );
               }),
+        );
+
+
+    }
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          title: const Text('Select apps'),
         ),
+        body: content,
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-
-            
-            for (final app in checkedApps) {
-              print(app.name);
-              ref.read(appsProvider.notifier).selectApp(app);
-            }
-            if (checkedApps.isEmpty){
-              ref.read(appsProvider.notifier).selectApp(null);
-
-            }
-
-            print(ref.watch(appsProvider).length);
+            ref.read(appsProvider.notifier).addApps(_checkedApps);
+            // ref.read(appsProvider.notifier).loadApps();
             Navigator.of(context).pop();
           },
           label: const Text('DONE'),
