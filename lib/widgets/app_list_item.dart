@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:installed_apps/app_info.dart';
+import 'package:think/models/app.dart';
 
 class AppListItem extends StatelessWidget {
   const AppListItem(
@@ -10,7 +10,7 @@ class AppListItem extends StatelessWidget {
 
       required this.isSelection});
 
-  final AppInfo app;
+  final App app;
   final bool isChecked;
   final ValueChanged<bool?>? onChecked;
   final bool isSelection;
@@ -20,8 +20,8 @@ class AppListItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: ListTile(
-        leading: Image.memory(app.icon!),
-        title: Text(app.name!),
+        leading: Image.memory(app.icon),
+        title: Text(app.name),
         trailing: isSelection? Checkbox(
           value: isChecked,
           onChanged:isSelection? onChecked : null,

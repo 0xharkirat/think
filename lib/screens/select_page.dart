@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:installed_apps/app_info.dart';
-import 'package:think/providers/apps_provider.dart';
+import 'package:think/models/app.dart';
+import 'package:think/providers/selected_apps_provider.dart';
 import 'package:think/providers/installed_apps_provider.dart';
 import 'package:think/widgets/app_list_item.dart';
 
@@ -14,7 +15,7 @@ class SelectScreen extends ConsumerStatefulWidget {
 
 class _SelectScreenState extends ConsumerState<SelectScreen> {
   // Variables
-  List<AppInfo> _selectedApps = [];
+  List<App> _selectedApps = [];
 
   // Methods
   void _getInstalledApps() async {
@@ -22,7 +23,7 @@ class _SelectScreenState extends ConsumerState<SelectScreen> {
   }
 
   void _getSelectedApps() {
-    final List<AppInfo> selectedApps = ref.read(selectedAppsProvider);
+    final List<App> selectedApps = ref.read(selectedAppsProvider);
 
     print(selectedApps);
 
@@ -31,7 +32,7 @@ class _SelectScreenState extends ConsumerState<SelectScreen> {
     });
   }
 
-  void _updateSelectedApps(AppInfo app, bool? isChecked) {
+  void _updateSelectedApps(App app, bool? isChecked) {
     setState(() {
       if (isChecked != null && isChecked) {
         _selectedApps.add(app);

@@ -1,11 +1,12 @@
 import 'package:installed_apps/app_info.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:think/models/app.dart';
 
 
-class SelectedAppsNotifier extends StateNotifier<List<AppInfo>> {
+class SelectedAppsNotifier extends StateNotifier<List<App>> {
   SelectedAppsNotifier() : super([]);
 
-  void selectApp(AppInfo? app) {
+  void selectApp(App? app) {
     final appIsChecked = state.contains(app);
     print(appIsChecked);
 
@@ -23,6 +24,6 @@ class SelectedAppsNotifier extends StateNotifier<List<AppInfo>> {
 }
 
 final selectedAppsProvider =
-    StateNotifierProvider<SelectedAppsNotifier, List<AppInfo>>((ref) => SelectedAppsNotifier());
+    StateNotifierProvider<SelectedAppsNotifier, List<App>>((ref) => SelectedAppsNotifier());
 
 
