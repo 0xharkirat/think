@@ -36,7 +36,6 @@ class InstalledAppsNotifier extends StateNotifier<List<App>> {
 
         if (existingInstalledApps.containsKey(app.packageName)) {
           // If the app is already in the database, update its data
-          print('app already in db');
           await db.update('installed_apps', appData,
               where: 'package_name = ?', whereArgs: [app.packageName]);
         } else {

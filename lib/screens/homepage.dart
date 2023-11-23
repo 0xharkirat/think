@@ -14,6 +14,7 @@ class HomePage extends ConsumerWidget {
       child: Text('No Apps Selected, Select some apps.'),
     );
     final List<App> selectedApps = ref.watch(selectedAppsProvider);
+    print(selectedApps.length);
 
     if (selectedApps.isNotEmpty) {
       content = Padding(
