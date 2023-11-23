@@ -1,4 +1,6 @@
 import 'dart:typed_data';
+
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:think/database/db.dart';
 import 'package:think/models/app.dart';
@@ -12,7 +14,7 @@ class SelectedAppsNotifier extends StateNotifier<List<App>> {
   }
 
   Future<void> _loadSelectedAppsFromDatabase() async {
-    print('entered here in the initial');
+
     final db = await DatabaseHelper.instance.database;
 
     final updatedAppsFromDb = await db.query('selected_apps');
@@ -43,9 +45,13 @@ class SelectedAppsNotifier extends StateNotifier<List<App>> {
 
 
 
-  void selectApp(List<App> selectedApps) async {
+  void selectApps(List<App> selectedApps) async {
 
     final db = await DatabaseHelper.instance.database;
+
+    for (final app in selectedApps){
+      print(app.packageName);
+    }
 
     if (selectedApps.isEmpty) {
       state = [];
@@ -106,8 +112,9 @@ class SelectedAppsNotifier extends StateNotifier<List<App>> {
 
       }
 
-      // Update the state with the new list of installed apps
       state = updatedSelectedApps;
+
+
 
     }
 

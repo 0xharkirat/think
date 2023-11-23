@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:installed_apps/app_info.dart';
 import 'package:think/models/app.dart';
 import 'package:think/providers/selected_apps_provider.dart';
 import 'package:think/providers/installed_apps_provider.dart';
@@ -25,7 +24,6 @@ class _SelectScreenState extends ConsumerState<SelectScreen> {
   void _getSelectedApps() {
     final List<App> selectedApps = ref.read(selectedAppsProvider);
 
-    print(selectedApps);
 
     setState(() {
       _selectedApps = selectedApps;
@@ -56,9 +54,11 @@ class _SelectScreenState extends ConsumerState<SelectScreen> {
       child: CircularProgressIndicator(),
     );
 
+    List <App> installedApps = ref.watch(installedAppsProvider);
+
     if (ref.watch(installedAppsProvider).isNotEmpty) {
       content = ListView.separated(
-          itemCount: ref.watch(installedAppsProvider).length,
+          itemCount: installedApps.length,
           separatorBuilder: (ctx, index) {
             return const Divider();
           },
@@ -66,7 +66,7 @@ class _SelectScreenState extends ConsumerState<SelectScreen> {
             return AppListItem(
               app: ref.watch(installedAppsProvider)[index],
               isChecked: _selectedApps
-                  .contains(ref.watch(installedAppsProvider)[index]),
+                  .contains(installedApps[index]),
               onChecked: (value) => _updateSelectedApp(
                   ref.watch(installedAppsProvider)[index], value),
               isSelection: true,
@@ -86,9 +86,7 @@ class _SelectScreenState extends ConsumerState<SelectScreen> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            ref.read(selectedAppsProvider.notifier).selectApp(_selectedApps);
-
-            print(ref.watch(selectedAppsProvider).length);
+            ref.read(selectedAppsProvider.notifier).selectApps(_selectedApps);
             Navigator.of(context).pop();
           },
           label: const Text('DONE'),

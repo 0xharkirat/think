@@ -1,5 +1,8 @@
+
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+
 
 class DatabaseHelper {
   DatabaseHelper._(); // private constructor to prevent instantiation
@@ -38,6 +41,8 @@ class DatabaseHelper {
       },
     );
   }
+
+
 }
 
 
