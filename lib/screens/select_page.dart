@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:installed_apps/app_info.dart';
-import 'package:think/providers/apps_provider.dart';
+import 'package:think/models/app.dart';
+import 'package:think/providers/selected_apps_provider.dart';
 import 'package:think/providers/installed_apps_provider.dart';
 import 'package:think/widgets/app_list_item.dart';
 
@@ -14,7 +14,7 @@ class SelectScreen extends ConsumerStatefulWidget {
 
 class _SelectScreenState extends ConsumerState<SelectScreen> {
   // Variables
-  List<AppInfo> _selectedApps = [];
+  List<App> _selectedApps = [];
 
   // Methods
   void _getInstalledApps() async {
@@ -22,16 +22,15 @@ class _SelectScreenState extends ConsumerState<SelectScreen> {
   }
 
   void _getSelectedApps() {
-    final List<AppInfo> selectedApps = ref.read(selectedAppsProvider);
+    final List<App> selectedApps = ref.read(selectedAppsProvider);
 
-    print(selectedApps);
 
     setState(() {
       _selectedApps = selectedApps;
     });
   }
 
-  void _updateSelectedApps(AppInfo app, bool? isChecked) {
+  void _updateSelectedApp(App app, bool? isChecked) {
     setState(() {
       if (isChecked != null && isChecked) {
         _selectedApps.add(app);
@@ -55,23 +54,24 @@ class _SelectScreenState extends ConsumerState<SelectScreen> {
       child: CircularProgressIndicator(),
     );
 
+    List <App> installedApps = ref.watch(installedAppsProvider);
+
     if (ref.watch(installedAppsProvider).isNotEmpty) {
       content = ListView.separated(
-        itemCount: ref.watch(installedAppsProvider).length,
-        separatorBuilder: (ctx, index) {
-          return const Divider();
-        },
-        itemBuilder: (ctx, index) {
-          return AppListItem(
-            app: ref.watch(installedAppsProvider)[index],
-            isChecked: _selectedApps
-                .contains(ref.watch(installedAppsProvider)[index]),
-            onChecked: (value) => _updateSelectedApps(
-                ref.watch(installedAppsProvider)[index], value),
-            isSelection: true,
-          );
-        }
-      );
+          itemCount: installedApps.length,
+          separatorBuilder: (ctx, index) {
+            return const Divider();
+          },
+          itemBuilder: (ctx, index) {
+            return AppListItem(
+              app: ref.watch(installedAppsProvider)[index],
+              isChecked: _selectedApps
+                  .contains(installedApps[index]),
+              onChecked: (value) => _updateSelectedApp(
+                  ref.watch(installedAppsProvider)[index], value),
+              isSelection: true,
+            );
+          });
     }
 
     return SafeArea(
@@ -86,20 +86,13 @@ class _SelectScreenState extends ConsumerState<SelectScreen> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            for (final app in _selectedApps) {
-              print(app.name);
-              ref.read(selectedAppsProvider.notifier).selectApp(app);
-            }
-            if (_selectedApps.isEmpty) {
-              ref.read(selectedAppsProvider.notifier).selectApp(null);
-            }
-
-            print(ref.watch(selectedAppsProvider).length);
+            ref.read(selectedAppsProvider.notifier).selectApps(_selectedApps);
             Navigator.of(context).pop();
           },
           label: const Text('DONE'),
           icon: const Icon(Icons.done),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         ),
       ),
     );
