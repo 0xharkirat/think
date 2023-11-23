@@ -1,9 +1,9 @@
 import 'package:installed_apps/app_info.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:think/utils/installed.dart';
 
-class AppsNotifier extends StateNotifier<List<AppInfo>> {
-  AppsNotifier() : super([]);
+
+class SelectedAppsNotifier extends StateNotifier<List<AppInfo>> {
+  SelectedAppsNotifier() : super([]);
 
   void selectApp(AppInfo? app) {
     final appIsChecked = state.contains(app);
@@ -11,7 +11,8 @@ class AppsNotifier extends StateNotifier<List<AppInfo>> {
 
     if (app == null) {
       state = [];
-    } else {
+    }
+    else {
       if (!appIsChecked) {
         state = [...state, app];
       } else {
@@ -21,27 +22,7 @@ class AppsNotifier extends StateNotifier<List<AppInfo>> {
   }
 }
 
-final appsProvider =
-    StateNotifierProvider<AppsNotifier, List<AppInfo>>((ref) => AppsNotifier());
+final selectedAppsProvider =
+    StateNotifierProvider<SelectedAppsNotifier, List<AppInfo>>((ref) => SelectedAppsNotifier());
 
-class InstalledAppsNotifier extends StateNotifier<List<AppInfo>> {
-  InstalledAppsNotifier() : super([]);
 
-  void storeInstalledApps() async {
-    if (state.isEmpty) {
-      final List<AppInfo> apps = await DeviceApps.getInstalledApps();
-
-      final List<AppInfo> loadedApps = [];
-
-      for (final app in apps) {
-        loadedApps.add(app);
-      }
-
-      state = loadedApps;
-    }
-  }
-}
-
-final installedAppsProvider =
-    StateNotifierProvider<InstalledAppsNotifier, List<AppInfo>>(
-        (ref) => InstalledAppsNotifier());

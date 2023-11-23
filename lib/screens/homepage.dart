@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:installed_apps/app_info.dart';
 import 'package:think/providers/apps_provider.dart';
-import 'package:think/screens/select.dart';
+import 'package:think/screens/select_page.dart';
 import 'package:think/widgets/app_list_item.dart';
 
 class HomePage extends ConsumerWidget {
@@ -13,7 +13,7 @@ class HomePage extends ConsumerWidget {
     Widget content = const Center(
       child: Text('No Apps Selected, Select some apps.'),
     );
-    final List<AppInfo> selectedApps = ref.watch(appsProvider);
+    final List<AppInfo> selectedApps = ref.watch(selectedAppsProvider);
 
     if (selectedApps.isNotEmpty) {
       content = Padding(
