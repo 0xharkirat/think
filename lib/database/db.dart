@@ -22,22 +22,15 @@ class DatabaseHelper {
       path,
       version: 1,
       onCreate: (db, version) async {
-        // create installed_apps table
+        // create selected_apps table
         await db.execute('''
-          CREATE TABLE installed_apps (
+          CREATE TABLE selected_apps (
             name TEXT, 
             package_name TEXT PRIMARY KEY,
             icon BLOB
           )
         ''');
 
-        // create selected_apps table
-        await db.execute('''
-          CREATE TABLE selected_apps (
-            package_name TEXT,
-            FOREIGN KEY (package_name) REFERENCES installed_apps(package_name)
-          )
-        ''');
       },
     );
   }
